@@ -4,6 +4,8 @@ const {
   errorHandler,
   invalidPathHandler,
 } = require("./middleware/errorMiddleware.js");
+const colors = require("colors");
+const connectDB = require("./config/db.js");
 
 const app = express();
 
@@ -24,5 +26,6 @@ app.use(errorHandler);
 app.use(invalidPathHandler);
 
 app.listen(PORT, () => {
+  connectDB();
   console.log(`Server is running on ${PORT}`);
 });
