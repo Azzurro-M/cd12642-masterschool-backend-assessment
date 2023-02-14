@@ -19,7 +19,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/photos", require("./routes/photoRoutes.js"));
-app.use("/api/photos/:id", require("./routes/photoRoutes.js"));
 
 app.use(errorHandler);
 app.use(invalidPathHandler);
