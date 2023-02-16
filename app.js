@@ -21,6 +21,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/photos", require("./routes/photoRoutes.js"));
+app.use("/api/user", require("./routes/userRoutes.js"));
+app.use("/api/favourites", require("./routes/favoritesRoutes.js"));
 
 app.use(errorHandler);
 app.use(invalidPathHandler);
