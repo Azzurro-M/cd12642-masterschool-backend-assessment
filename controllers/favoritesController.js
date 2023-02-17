@@ -1,5 +1,6 @@
 //Import asyncHandler so that we can use it in our routes to trigger error handling middleware
 const asyncHandler = require("express-async-handler");
+const FavoritePhoto = require("../models/favoritePhotoModel.js");
 
 //add to favourtites
 const addIn = asyncHandler(async (req, res, next) => {
@@ -14,27 +15,22 @@ const addIn = asyncHandler(async (req, res, next) => {
   });
   await favoritePhoto.save();
 
-  res.status(201).json({ message: "Photo added to favorites" });
+  res.status(201).json({ favoritePhoto, message: "Photo added to favorites" });
 });
 
 const getAllFavourites = asyncHandler(async (req, res, next) => {
-  const { user } = req.query;
-
-  const favoritePhotos = await FavoritePhoto.find({ user });
-  return res.json(favoritePhotos);
+  //it's to check that you are only getting logged in id fav photos
+  const favoritePhotos = await FavoritePhoto.find({ user: req.user._id });
+  return res.status(200).json(favoritePhotos);
 });
 
 const deletePhoto = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  const favoritePhoto = await FavoritePhoto.findById(id);
+  const favoritePhoto = await FavoritePhoto.findByIdAndDelete(req.params.id);
   if (!favoritePhoto) {
     res.status(404).json({ message: "Photo not found" });
     return;
   }
-
-  await favoritePhoto.remove();
-  res.json({ message: "Photo removed from favorites" });
+  res.status(204).json({ message: "Photo removed from favorites" });
 });
 
 const editPhoto = asyncHandler(async (req, res, next) => {
@@ -49,7 +45,7 @@ const editPhoto = asyncHandler(async (req, res, next) => {
 
   favoritePhoto.description = description;
   await favoritePhoto.save();
-  res.json({ message: "Photo description updated" });
+  res.json({ favoritePhoto, message: "Photo description updated" });
 });
 
 module.exports = { addIn, getAllFavourites, deletePhoto, editPhoto };

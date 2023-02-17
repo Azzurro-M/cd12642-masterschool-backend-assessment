@@ -8,16 +8,14 @@ const {
 } = require("../controllers/favoritesController.js");
 const router = express.Router();
 
-//ADD PHOTO
-router.post("/", authMiddleware.protect, addIn);
+router
+  .route("/")
+  .post(authMiddleware.protect, addIn)
+  .get(authMiddleware.protect, getAllFavourites);
 
-//GET ALL FAV PHOTOS
-router.get("/favouritePhotos", authMiddleware.protect, getAllFavourites);
-
-// DELETE PHOTO BY ID
-router.delete("/deletePhoto/:id", authMiddleware.protect, deletePhoto);
-
-//EDIT PHOTO DESCRIPTION
-router.patch("/editPhoto/:id", authMiddleware.protect, editPhoto);
+router
+  .route("/:id")
+  .delete(authMiddleware.protect, deletePhoto)
+  .patch(authMiddleware.protect, editPhoto);
 
 module.exports = router;
