@@ -2,12 +2,16 @@
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 const baseUrl = "https://api.unsplash.com";
-const accessKey = "?client_id=PhLZKC8LQ8_o5YROA3oCKRq7jcEURMaQRirXXL0S0wc";
+const dotenv = require("dotenv");
+dotenv.config({ path: "./env" });
+const accessKey = process.env.UNSPLASH_ACCESS_KEY;
 //"https://api.unsplash.com/";
 
 const getAllPhotos = asyncHandler(async (req, res, next) => {
   try {
-    const response = await axios.get(`${baseUrl}/photos/${accessKey}`);
+    const response = await axios.get(
+      `${baseUrl}/photos?client_id=${accessKey}`
+    );
     const photos = await response.data.map((photo) => photo.urls.raw);
     res.status(200);
     return res.json(photos);
@@ -16,14 +20,15 @@ const getAllPhotos = asyncHandler(async (req, res, next) => {
     return res.json({
       message: "Server error. Please try again later.",
     });
-    next(err);
   }
 });
 
 const getPhotoById = asyncHandler(async (req, res, next) => {
   try {
     const id = req.params.id;
-    const response = await axios.get(`${baseUrl}/photos/${id}/${accessKey}`);
+    const response = await axios.get(
+      `${baseUrl}/photos/${id}?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+    );
     const photoById = response.data;
     res.status(200);
     return res.json(photoById);
@@ -32,7 +37,6 @@ const getPhotoById = asyncHandler(async (req, res, next) => {
     return res.json({
       message: "Server error. Please try again later.",
     });
-    next(err);
   }
 });
 
@@ -40,7 +44,7 @@ const getPhotoByUsername = asyncHandler(async (req, res, next) => {
   try {
     const username = req.params.username;
     const { data } = await axios.get(
-      `${baseUrl}/users/${username}/photos${accessKey}`
+      `${baseUrl}/users/${username}/photos?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
     );
     const photos = data.map((photo) => ({
       id: photo.id,
@@ -55,7 +59,6 @@ const getPhotoByUsername = asyncHandler(async (req, res, next) => {
     res.status(err.response.status);
     return res.json({ message: err.response.data });
   }
-  next(err);
 });
 
 module.exports = { getAllPhotos, getPhotoById, getPhotoByUsername };

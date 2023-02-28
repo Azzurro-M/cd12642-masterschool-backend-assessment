@@ -13,7 +13,7 @@ const addIn = asyncHandler(async (req, res, next) => {
     username,
     reason,
   });
-  await favoritePhoto.save();
+  await favoritePhoto.create();
 
   res.status(201).json({ favoritePhoto, message: "Photo added to favorites" });
 });
